@@ -1,0 +1,3 @@
+python-dotenv
+crawl4ai @ git+https://github.com/unclecode/crawl4ai.git
+playwright
