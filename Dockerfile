@@ -1,0 +1,23 @@
+FROM python:3.12-bookworm
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+WORKDIR /app
+
+# Copy the dependency list first to improve build caching.
+COPY requirements.txt .
+
+# Install Python dependencies and Chromium with its
+# required Linux system libraries.
+RUN python -m pip install --upgrade pip \
+    && pip install --no-cache-dir -r requirements.txt \
+    && python -m playwright install --with-deps chromium
+
+# Copy the FastAPI application and crawler.
+COPY . .
+
+# Render supplies the PORT environment variable.
+EXPOSE 10000
+
+CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port ${PORT:-10000}"]
